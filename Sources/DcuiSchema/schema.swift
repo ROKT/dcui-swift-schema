@@ -879,6 +879,14 @@ public struct ColumnModel<Children: Codable, Predicates: Codable>: Codable {
 	}
 }
 
+public struct EscapeHatchModel: Codable, Hashable {
+    public let data: String
+    
+    public init(data: String) {
+        self.data = data
+    }
+}
+
 public struct CreativeResponseStyles: Codable, Hashable {
 	public let container: ContainerStylingProperties?
 	public let background: BackgroundStylingProperties?
@@ -2154,6 +2162,7 @@ public indirect enum LayoutSchemaModel: Codable {
 	case progressControl(ProgressControlModel<LayoutSchemaModel, WhenPredicate>)
 	case groupedDistribution(GroupedDistributionModel<WhenPredicate>)
 	case toggleButtonStateTrigger(ToggleButtonStateTriggerModel<LayoutSchemaModel, WhenPredicate>)
+    case escapeHatch(EscapeHatchModel)
 
 	enum CodingKeys: String, CodingKey, Codable {
 		case row = "Row",
@@ -2177,7 +2186,8 @@ public indirect enum LayoutSchemaModel: Codable {
 			carouselDistribution = "CarouselDistribution",
 			progressControl = "ProgressControl",
 			groupedDistribution = "GroupedDistribution",
-			toggleButtonStateTrigger = "ToggleButtonStateTrigger"
+			toggleButtonStateTrigger = "ToggleButtonStateTrigger",
+            escapeHatch = "EscapeHatch"
 	}
 
 	private enum ContainerCodingKeys: String, CodingKey {
@@ -2298,6 +2308,11 @@ public indirect enum LayoutSchemaModel: Codable {
 					self = .toggleButtonStateTrigger(content)
 					return
 				}
+            case .escapeHatch:
+                if let content = try? container.decode(EscapeHatchModel.self, forKey: .node) {
+                    self = .escapeHatch(content)
+                    return
+                }
 			}
 		}
 		throw DecodingError.typeMismatch(LayoutSchemaModel.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for LayoutSchemaModel"))
@@ -2372,6 +2387,9 @@ public indirect enum LayoutSchemaModel: Codable {
 		case .toggleButtonStateTrigger(let content):
 			try container.encode(CodingKeys.toggleButtonStateTrigger, forKey: .type)
 			try container.encode(content, forKey: .node)
+        case .escapeHatch(let content):
+            try container.encode(CodingKeys.escapeHatch, forKey: .type)
+            try container.encode(content, forKey: .node)
 		}
 	}
 }
@@ -2392,6 +2410,7 @@ public enum LayoutVariantSchemaModel: Codable {
 	case staticLink(StaticLinkModel<LayoutVariantNonInteractableChildren, LayoutVariantWhenPredicate>)
 	case closeButton(CloseButtonModel<LayoutVariantNonInteractableChildren, LayoutVariantWhenPredicate>)
 	case toggleButtonStateTrigger(ToggleButtonStateTriggerModel<LayoutVariantNonInteractableChildren, LayoutVariantWhenPredicate>)
+	case escapeHatch(EscapeHatchModel)
 
 	enum CodingKeys: String, CodingKey, Codable {
 		case row = "Row",
@@ -2408,7 +2427,8 @@ public enum LayoutVariantSchemaModel: Codable {
 			when = "When",
 			staticLink = "StaticLink",
 			closeButton = "CloseButton",
-			toggleButtonStateTrigger = "ToggleButtonStateTrigger"
+			toggleButtonStateTrigger = "ToggleButtonStateTrigger",
+			escapeHatch = "EscapeHatch"
 	}
 
 	private enum ContainerCodingKeys: String, CodingKey {
@@ -2492,6 +2512,11 @@ public enum LayoutVariantSchemaModel: Codable {
 			case .toggleButtonStateTrigger:
 				if let content = try? container.decode(ToggleButtonStateTriggerModel<LayoutVariantNonInteractableChildren, LayoutVariantWhenPredicate>.self, forKey: .node) {
 					self = .toggleButtonStateTrigger(content)
+					return
+				}
+			case .escapeHatch:
+				if let content = try? container.decode(EscapeHatchModel.self, forKey: .node) {
+					self = .escapeHatch(content)
 					return
 				}
 			}
@@ -2547,6 +2572,9 @@ public enum LayoutVariantSchemaModel: Codable {
 		case .toggleButtonStateTrigger(let content):
 			try container.encode(CodingKeys.toggleButtonStateTrigger, forKey: .type)
 			try container.encode(content, forKey: .node)
+		case .escapeHatch(let content):
+			try container.encode(CodingKeys.escapeHatch, forKey: .type)
+			try container.encode(content, forKey: .node)
 		}
 	}
 }
@@ -2567,7 +2595,7 @@ public indirect enum LayoutVariantChildren: Codable {
 	case staticLink(StaticLinkModel<LayoutVariantNonInteractableChildren, LayoutVariantWhenPredicate>)
 	case closeButton(CloseButtonModel<LayoutVariantNonInteractableChildren, LayoutVariantWhenPredicate>)
 	case toggleButtonStateTrigger(ToggleButtonStateTriggerModel<LayoutVariantNonInteractableChildren, LayoutVariantWhenPredicate>)
-
+	case escapeHatch(EscapeHatchModel)
 	enum CodingKeys: String, CodingKey, Codable {
 		case row = "Row",
 			column = "Column",
@@ -2583,7 +2611,8 @@ public indirect enum LayoutVariantChildren: Codable {
 			when = "When",
 			staticLink = "StaticLink",
 			closeButton = "CloseButton",
-			toggleButtonStateTrigger = "ToggleButtonStateTrigger"
+			toggleButtonStateTrigger = "ToggleButtonStateTrigger",
+			escapeHatch = "EscapeHatch"
 	}
 
 	private enum ContainerCodingKeys: String, CodingKey {
@@ -2669,6 +2698,11 @@ public indirect enum LayoutVariantChildren: Codable {
 					self = .toggleButtonStateTrigger(content)
 					return
 				}
+			case .escapeHatch:
+				if let content = try? container.decode(EscapeHatchModel.self, forKey: .node) {
+					self = .escapeHatch(content)
+					return
+				}
 			}
 		}
 		throw DecodingError.typeMismatch(LayoutVariantChildren.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for LayoutVariantChildren"))
@@ -2722,6 +2756,9 @@ public indirect enum LayoutVariantChildren: Codable {
 		case .toggleButtonStateTrigger(let content):
 			try container.encode(CodingKeys.toggleButtonStateTrigger, forKey: .type)
 			try container.encode(content, forKey: .node)
+		case .escapeHatch(let content):
+			try container.encode(CodingKeys.escapeHatch, forKey: .type)
+			try container.encode(content, forKey: .node)
 		}
 	}
 }
@@ -2747,6 +2784,7 @@ public enum OuterLayoutSchemaModel: Codable {
 	case progressControl(ProgressControlModel<OuterLayoutNonInteractableChildren, OuterLayoutWhenPredicate>)
 	case groupedDistribution(GroupedDistributionModel<OuterLayoutWhenPredicate>)
 	case toggleButtonStateTrigger(ToggleButtonStateTriggerModel<OuterLayoutNonInteractableChildren, OuterLayoutWhenPredicate>)
+	case escapeHatch(EscapeHatchModel)
 
 	enum CodingKeys: String, CodingKey, Codable {
 		case row = "Row",
@@ -2768,7 +2806,8 @@ public enum OuterLayoutSchemaModel: Codable {
 			carouselDistribution = "CarouselDistribution",
 			progressControl = "ProgressControl",
 			groupedDistribution = "GroupedDistribution",
-			toggleButtonStateTrigger = "ToggleButtonStateTrigger"
+			toggleButtonStateTrigger = "ToggleButtonStateTrigger",
+			escapeHatch = "EscapeHatch"
 	}
 
 	private enum ContainerCodingKeys: String, CodingKey {
@@ -2879,6 +2918,11 @@ public enum OuterLayoutSchemaModel: Codable {
 					self = .toggleButtonStateTrigger(content)
 					return
 				}
+			case .escapeHatch:
+				if let content = try? container.decode(EscapeHatchModel.self, forKey: .node) {
+					self = .escapeHatch(content)
+					return
+				}
 			}
 		}
 		throw DecodingError.typeMismatch(OuterLayoutSchemaModel.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for OuterLayoutSchemaModel"))
@@ -2947,6 +2991,9 @@ public enum OuterLayoutSchemaModel: Codable {
 		case .toggleButtonStateTrigger(let content):
 			try container.encode(CodingKeys.toggleButtonStateTrigger, forKey: .type)
 			try container.encode(content, forKey: .node)
+		case .escapeHatch(let content):
+			try container.encode(CodingKeys.escapeHatch, forKey: .type)
+			try container.encode(content, forKey: .node)
 		}
 	}
 }
@@ -2970,7 +3017,7 @@ public indirect enum OuterLayoutChildren: Codable {
 	case progressControl(ProgressControlModel<OuterLayoutNonInteractableChildren, OuterLayoutWhenPredicate>)
 	case groupedDistribution(GroupedDistributionModel<OuterLayoutWhenPredicate>)
 	case toggleButtonStateTrigger(ToggleButtonStateTriggerModel<OuterLayoutNonInteractableChildren, OuterLayoutWhenPredicate>)
-
+	case escapeHatch(EscapeHatchModel)
 	enum CodingKeys: String, CodingKey, Codable {
 		case row = "Row",
 			column = "Column",
@@ -2989,7 +3036,8 @@ public indirect enum OuterLayoutChildren: Codable {
 			carouselDistribution = "CarouselDistribution",
 			progressControl = "ProgressControl",
 			groupedDistribution = "GroupedDistribution",
-			toggleButtonStateTrigger = "ToggleButtonStateTrigger"
+			toggleButtonStateTrigger = "ToggleButtonStateTrigger",
+			escapeHatch = "EscapeHatch"
 	}
 
 	private enum ContainerCodingKeys: String, CodingKey {
@@ -3090,6 +3138,11 @@ public indirect enum OuterLayoutChildren: Codable {
 					self = .toggleButtonStateTrigger(content)
 					return
 				}
+			case .escapeHatch:
+				if let content = try? container.decode(EscapeHatchModel.self, forKey: .node) {
+					self = .escapeHatch(content)
+					return
+				}
 			}
 		}
 		throw DecodingError.typeMismatch(OuterLayoutChildren.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for OuterLayoutChildren"))
@@ -3152,6 +3205,9 @@ public indirect enum OuterLayoutChildren: Codable {
 		case .toggleButtonStateTrigger(let content):
 			try container.encode(CodingKeys.toggleButtonStateTrigger, forKey: .type)
 			try container.encode(content, forKey: .node)
+		case .escapeHatch(let content):
+			try container.encode(CodingKeys.escapeHatch, forKey: .type)
+			try container.encode(content, forKey: .node)
 		}
 	}
 }
@@ -3175,7 +3231,7 @@ public indirect enum ScrollableChildren: Codable {
 	case progressControl(ProgressControlModel<OuterLayoutNonInteractableChildren, WhenPredicate>)
 	case groupedDistribution(GroupedDistributionModel<WhenPredicate>)
 	case toggleButtonStateTrigger(ToggleButtonStateTriggerModel<NonInteractableChildren, WhenPredicate>)
-
+	case escapeHatch(EscapeHatchModel)
 	enum CodingKeys: String, CodingKey, Codable {
 		case row = "Row",
 			column = "Column",
@@ -3194,7 +3250,8 @@ public indirect enum ScrollableChildren: Codable {
 			carouselDistribution = "CarouselDistribution",
 			progressControl = "ProgressControl",
 			groupedDistribution = "GroupedDistribution",
-			toggleButtonStateTrigger = "ToggleButtonStateTrigger"
+			toggleButtonStateTrigger = "ToggleButtonStateTrigger",
+			escapeHatch = "EscapeHatch"
 	}
 
 	private enum ContainerCodingKeys: String, CodingKey {
@@ -3295,6 +3352,11 @@ public indirect enum ScrollableChildren: Codable {
 					self = .toggleButtonStateTrigger(content)
 					return
 				}
+			case .escapeHatch:
+				if let content = try? container.decode(EscapeHatchModel.self, forKey: .node) {
+					self = .escapeHatch(content)
+					return
+				}
 			}
 		}
 		throw DecodingError.typeMismatch(ScrollableChildren.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for ScrollableChildren"))
@@ -3357,6 +3419,9 @@ public indirect enum ScrollableChildren: Codable {
 		case .toggleButtonStateTrigger(let content):
 			try container.encode(CodingKeys.toggleButtonStateTrigger, forKey: .type)
 			try container.encode(content, forKey: .node)
+		case .escapeHatch(let content):
+			try container.encode(CodingKeys.escapeHatch, forKey: .type)
+			try container.encode(content, forKey: .node)
 		}
 	}
 }
@@ -3378,6 +3443,7 @@ public indirect enum ScrollableOuterLayoutChildren: Codable {
 	case progressControl(ProgressControlModel<OuterLayoutNonInteractableChildren, OuterLayoutWhenPredicate>)
 	case groupedDistribution(GroupedDistributionModel<OuterLayoutWhenPredicate>)
 	case toggleButtonStateTrigger(ToggleButtonStateTriggerModel<OuterLayoutNonInteractableChildren, OuterLayoutWhenPredicate>)
+	case escapeHatch(EscapeHatchModel)
 
 	enum CodingKeys: String, CodingKey, Codable {
 		case row = "Row",
@@ -3395,7 +3461,8 @@ public indirect enum ScrollableOuterLayoutChildren: Codable {
 			carouselDistribution = "CarouselDistribution",
 			progressControl = "ProgressControl",
 			groupedDistribution = "GroupedDistribution",
-			toggleButtonStateTrigger = "ToggleButtonStateTrigger"
+			toggleButtonStateTrigger = "ToggleButtonStateTrigger",
+			escapeHatch = "EscapeHatch"
 	}
 
 	private enum ContainerCodingKeys: String, CodingKey {
@@ -3486,6 +3553,11 @@ public indirect enum ScrollableOuterLayoutChildren: Codable {
 					self = .toggleButtonStateTrigger(content)
 					return
 				}
+			case .escapeHatch:
+				if let content = try? container.decode(EscapeHatchModel.self, forKey: .node) {
+					self = .escapeHatch(content)
+					return
+				}
 			}
 		}
 		throw DecodingError.typeMismatch(ScrollableOuterLayoutChildren.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for ScrollableOuterLayoutChildren"))
@@ -3542,6 +3614,9 @@ public indirect enum ScrollableOuterLayoutChildren: Codable {
 		case .toggleButtonStateTrigger(let content):
 			try container.encode(CodingKeys.toggleButtonStateTrigger, forKey: .type)
 			try container.encode(content, forKey: .node)
+		case .escapeHatch(let content):
+			try container.encode(CodingKeys.escapeHatch, forKey: .type)
+			try container.encode(content, forKey: .node)
 		}
 	}
 }
@@ -3559,6 +3634,7 @@ public indirect enum ScrollableLayoutVariantChildren: Codable {
 	case when(WhenModel<ScrollableLayoutVariantChildren, LayoutVariantWhenPredicate>)
 	case staticLink(StaticLinkModel<LayoutVariantNonInteractableChildren, LayoutVariantWhenPredicate>)
 	case toggleButtonStateTrigger(ToggleButtonStateTriggerModel<LayoutVariantNonInteractableChildren, LayoutVariantWhenPredicate>)
+	case escapeHatch(EscapeHatchModel)
 
 	enum CodingKeys: String, CodingKey, Codable {
 		case row = "Row",
@@ -3572,7 +3648,8 @@ public indirect enum ScrollableLayoutVariantChildren: Codable {
 			creativeResponse = "CreativeResponse",
 			when = "When",
 			staticLink = "StaticLink",
-			toggleButtonStateTrigger = "ToggleButtonStateTrigger"
+			toggleButtonStateTrigger = "ToggleButtonStateTrigger",
+			escapeHatch = "EscapeHatch"
 	}
 
 	private enum ContainerCodingKeys: String, CodingKey {
@@ -3643,6 +3720,11 @@ public indirect enum ScrollableLayoutVariantChildren: Codable {
 					self = .toggleButtonStateTrigger(content)
 					return
 				}
+			case .escapeHatch:
+				if let content = try? container.decode(EscapeHatchModel.self, forKey: .node) {
+					self = .escapeHatch(content)
+					return
+				}
 			}
 		}
 		throw DecodingError.typeMismatch(ScrollableLayoutVariantChildren.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for ScrollableLayoutVariantChildren"))
@@ -3687,6 +3769,9 @@ public indirect enum ScrollableLayoutVariantChildren: Codable {
 		case .toggleButtonStateTrigger(let content):
 			try container.encode(CodingKeys.toggleButtonStateTrigger, forKey: .type)
 			try container.encode(content, forKey: .node)
+		case .escapeHatch(let content):
+			try container.encode(CodingKeys.escapeHatch, forKey: .type)
+			try container.encode(content, forKey: .node)
 		}
 	}
 }
@@ -3710,6 +3795,7 @@ public indirect enum ModalChildren: Codable {
 	case progressControl(ProgressControlModel<OuterLayoutNonInteractableChildren, OuterLayoutWhenPredicate>)
 	case groupedDistribution(GroupedDistributionModel<OuterLayoutWhenPredicate>)
 	case toggleButtonStateTrigger(ToggleButtonStateTriggerModel<OuterLayoutNonInteractableChildren, OuterLayoutWhenPredicate>)
+	case escapeHatch(EscapeHatchModel)
 
 	enum CodingKeys: String, CodingKey, Codable {
 		case row = "Row",
@@ -3729,7 +3815,8 @@ public indirect enum ModalChildren: Codable {
 			carouselDistribution = "CarouselDistribution",
 			progressControl = "ProgressControl",
 			groupedDistribution = "GroupedDistribution",
-			toggleButtonStateTrigger = "ToggleButtonStateTrigger"
+			toggleButtonStateTrigger = "ToggleButtonStateTrigger",
+			escapeHatch = "EscapeHatch"
 	}
 
 	private enum ContainerCodingKeys: String, CodingKey {
@@ -3830,6 +3917,11 @@ public indirect enum ModalChildren: Codable {
 					self = .toggleButtonStateTrigger(content)
 					return
 				}
+			case .escapeHatch:
+				if let content = try? container.decode(EscapeHatchModel.self, forKey: .node) {
+					self = .escapeHatch(content)
+					return
+				}
 			}
 		}
 		throw DecodingError.typeMismatch(ModalChildren.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for ModalChildren"))
@@ -3892,6 +3984,9 @@ public indirect enum ModalChildren: Codable {
 		case .toggleButtonStateTrigger(let content):
 			try container.encode(CodingKeys.toggleButtonStateTrigger, forKey: .type)
 			try container.encode(content, forKey: .node)
+		case .escapeHatch(let content):
+			try container.encode(CodingKeys.escapeHatch, forKey: .type)
+			try container.encode(content, forKey: .node)
 		}
 	}
 }
@@ -3909,6 +4004,7 @@ public indirect enum OuterLayoutNonInteractableChildren: Codable {
 	case staticImage(StaticImageModel<OuterLayoutWhenPredicate>)
 	case basicText(BasicTextModel<OuterLayoutWhenPredicate>)
 	case when(WhenModel<OuterLayoutNonInteractableChildren, OuterLayoutWhenPredicate>)
+	case escapeHatch(EscapeHatchModel)
 
 	enum CodingKeys: String, CodingKey, Codable {
 		case row = "Row",
@@ -3916,7 +4012,8 @@ public indirect enum OuterLayoutNonInteractableChildren: Codable {
 			zStack = "ZStack",
 			staticImage = "StaticImage",
 			basicText = "BasicText",
-			when = "When"
+			when = "When",
+			escapeHatch = "EscapeHatch"
 	}
 
 	private enum ContainerCodingKeys: String, CodingKey {
@@ -3957,6 +4054,11 @@ public indirect enum OuterLayoutNonInteractableChildren: Codable {
 					self = .when(content)
 					return
 				}
+			case .escapeHatch:
+				if let content = try? container.decode(EscapeHatchModel.self, forKey: .node) {
+					self = .escapeHatch(content)
+					return
+				}
 			}
 		}
 		throw DecodingError.typeMismatch(OuterLayoutNonInteractableChildren.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for OuterLayoutNonInteractableChildren"))
@@ -3983,6 +4085,9 @@ public indirect enum OuterLayoutNonInteractableChildren: Codable {
 		case .when(let content):
 			try container.encode(CodingKeys.when, forKey: .type)
 			try container.encode(content, forKey: .node)
+		case .escapeHatch(let content):
+			try container.encode(CodingKeys.escapeHatch, forKey: .type)
+			try container.encode(content, forKey: .node)
 		}
 	}
 }
@@ -3995,7 +4100,7 @@ public indirect enum LayoutVariantNonInteractableChildren: Codable {
 	case staticImage(StaticImageModel<LayoutVariantWhenPredicate>)
 	case dataImage(DataImageModel<LayoutVariantWhenPredicate>)
 	case when(WhenModel<LayoutVariantNonInteractableChildren, LayoutVariantWhenPredicate>)
-
+	case escapeHatch(EscapeHatchModel)
 	enum CodingKeys: String, CodingKey, Codable {
 		case row = "Row",
 			column = "Column",
@@ -4003,7 +4108,8 @@ public indirect enum LayoutVariantNonInteractableChildren: Codable {
 			basicText = "BasicText",
 			staticImage = "StaticImage",
 			dataImage = "DataImage",
-			when = "When"
+			when = "When",
+			escapeHatch = "EscapeHatch"
 	}
 
 	private enum ContainerCodingKeys: String, CodingKey {
@@ -4049,6 +4155,11 @@ public indirect enum LayoutVariantNonInteractableChildren: Codable {
 					self = .when(content)
 					return
 				}
+			case .escapeHatch:
+				if let content = try? container.decode(EscapeHatchModel.self, forKey: .node) {
+					self = .escapeHatch(content)
+					return
+				}
 			}
 		}
 		throw DecodingError.typeMismatch(LayoutVariantNonInteractableChildren.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for LayoutVariantNonInteractableChildren"))
@@ -4078,6 +4189,9 @@ public indirect enum LayoutVariantNonInteractableChildren: Codable {
 		case .when(let content):
 			try container.encode(CodingKeys.when, forKey: .type)
 			try container.encode(content, forKey: .node)
+		case .escapeHatch(let content):
+			try container.encode(CodingKeys.escapeHatch, forKey: .type)
+			try container.encode(content, forKey: .node)
 		}
 	}
 }
@@ -4090,6 +4204,7 @@ public indirect enum NonInteractableChildren: Codable {
 	case staticImage(StaticImageModel<WhenPredicate>)
 	case dataImage(DataImageModel<WhenPredicate>)
 	case when(WhenModel<NonInteractableChildren, WhenPredicate>)
+	case escapeHatch(EscapeHatchModel)
 
 	enum CodingKeys: String, CodingKey, Codable {
 		case row = "Row",
@@ -4098,7 +4213,8 @@ public indirect enum NonInteractableChildren: Codable {
 			basicText = "BasicText",
 			staticImage = "StaticImage",
 			dataImage = "DataImage",
-			when = "When"
+			when = "When",
+			escapeHatch = "EscapeHatch"
 	}
 
 	private enum ContainerCodingKeys: String, CodingKey {
@@ -4144,6 +4260,11 @@ public indirect enum NonInteractableChildren: Codable {
 					self = .when(content)
 					return
 				}
+			case .escapeHatch:
+				if let content = try? container.decode(EscapeHatchModel.self, forKey: .node) {
+					self = .escapeHatch(content)
+					return
+				}
 			}
 		}
 		throw DecodingError.typeMismatch(NonInteractableChildren.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for NonInteractableChildren"))
@@ -4172,6 +4293,9 @@ public indirect enum NonInteractableChildren: Codable {
 			try container.encode(content, forKey: .node)
 		case .when(let content):
 			try container.encode(CodingKeys.when, forKey: .type)
+			try container.encode(content, forKey: .node)
+		case .escapeHatch(let content):
+			try container.encode(CodingKeys.escapeHatch, forKey: .type)
 			try container.encode(content, forKey: .node)
 		}
 	}
