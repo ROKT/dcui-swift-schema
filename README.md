@@ -12,7 +12,7 @@ Swift 5.5 or higher. The package is compatible with iOS 13.0 and above.
 
 ## Project architecture
 
-This Swift package defines the shared schema models for DCUI (Dynamic Content UI) which are used across Rokt libraries. The package primarily contains:
+This Swift package defines the shared schema models for DCUI (Dynamically Composable User Interface) which are used across Rokt libraries. The package primarily contains:
 
 - Layout schema models
 - Node definitions
