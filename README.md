@@ -48,8 +48,7 @@ import DcuiSchema
 
 ## How to run tests locally?
 
-Select the DcuiSchema scheme, select an iphone and press command + U, or Product -> Test menu in Xcode.
-
+Select the DcuiSchema scheme, select an iPhone and press command + U, or Product -> Test menu in Xcode.
 ## FAQ
 
 ### What are the branches?
