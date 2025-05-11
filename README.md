@@ -2,9 +2,8 @@
 Swift package manager package for shared DCUI schema types. It contains the definitions of layout schema models, nodes and styles which can be utilized by Rokt libraries
 
 ## Resident Experts
-- Danial Motahari - <danial.motahari@rokt.com>
-- Wei Yew Teoh - <wei.yew.teoh@rokt.com>
 - Thomson Thomas - <thomson.thomas@rokt.com>
+- James Newman - <james.newman@rokt.com>
 
 ## Requirements
 
