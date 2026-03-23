@@ -21,7 +21,9 @@ These types are designed to be used as a foundation for rendering dynamic UI lay
 
 ## Installation
 
-To install `dcui-swift-schema`, add the following dependency to your `Package.swift` file:
+### Swift Package Manager
+
+Add the following dependency to your `Package.swift` file:
 
 ```swift
 dependencies: [
@@ -39,8 +41,24 @@ targets: [
 ]
 ```
 
+### CocoaPods
+
+Add the following to your `Podfile`:
+
+```ruby
+pod 'DcuiSchema', '~> 2.3'
+```
+
+Then run:
+
+```bash
+pod install
+```
+
 ## Usage
+
 Import the `DcuiSchema` module in your Swift files:
+
 ```Swift
 import DcuiSchema  
 ```
@@ -48,6 +66,7 @@ import DcuiSchema
 ## How to run tests locally?
 
 Select the DcuiSchema scheme, select an iPhone and press command + U, or Product -> Test menu in Xcode.
+
 ## FAQ
 
 ### What are the branches?
@@ -59,6 +78,7 @@ The main branches of this repository include: **master**, **release-** and **fea
 * **feature branches** - All other branches are considered feature branches.
 
 ### What are the versions?
+
 We are using semantic versioning starting with version 1.0.0. Each new feature requires incrementing minor version and breaking changes require incrementing major version.
 
 ### Something is not working, what do I do?

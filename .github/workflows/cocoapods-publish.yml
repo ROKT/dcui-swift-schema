@@ -1,0 +1,29 @@
+name: Release - Publish CocoaPods
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+" # Stable: 2.3.0
+      - "[0-9]+.[0-9]+.[0-9]+-*" # Prerelease: 2.3.0-alpha1
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish-cocoapods:
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Validate podspec
+        run: pod lib lint DcuiSchema.podspec --allow-warnings --verbose
+
+      - name: Publish to CocoaPods
+        run: pod trunk push DcuiSchema.podspec --allow-warnings
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
