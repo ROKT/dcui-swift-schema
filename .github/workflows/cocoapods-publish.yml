@@ -6,8 +6,7 @@ on:
       - "[0-9]+.[0-9]+.[0-9]+" # Stable: 2.3.0
       - "[0-9]+.[0-9]+.[0-9]+-*" # Prerelease: 2.3.0-alpha1
 
-permissions:
-  contents: read
+permissions: {} # deny-by-default; job below grants only what it needs
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -15,10 +14,15 @@ concurrency:
 
 jobs:
   publish-cocoapods:
+    name: Publish to CocoaPods
     runs-on: macos-15
+    permissions:
+      contents: read # required by actions/checkout to pull the repo for linting + pushing the podspec
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Validate podspec
         run: pod lib lint DcuiSchema.podspec --allow-warnings --verbose

@@ -1,15 +1,12 @@
 name: Pull Request
 
-permissions:
-  contents: read
-  pull-requests: read
-  id-token: write
-
 on:
   push:
     branches:
       - master
   pull_request:
+
+permissions: {} # deny-by-default; each job grants only what it needs
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -17,10 +14,15 @@ concurrency:
 
 jobs:
   podspec-lint:
+    name: Lint podspec
     runs-on: macos-15
+    permissions:
+      contents: read # required by actions/checkout to pull the repo
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Lint podspec
         run: pod lib lint DcuiSchema.podspec --allow-warnings --verbose
@@ -31,6 +33,10 @@ jobs:
       github.event.pull_request.draft == false
     name: Notify GChat
     needs: [podspec-lint]
+    permissions:
+      contents: read # reusable workflow below checks out its own repo
+      pull-requests: read # reusable workflow reads PR metadata (title, author, URL) for the notification payload
+      id-token: write # reusable workflow uses OIDC to authenticate to the GChat webhook
     uses: ROKT/rokt-workflows/.github/workflows/oss_pr_opened_notification.yml@1859338d7c2c2b873233505c751acbf09fb218d5 # main
     secrets:
       gchat_webhook: ${{ secrets.GCHAT_PRS_WEBHOOK }}
