@@ -1,0 +1,52 @@
+name: Zizmor Security Scan
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - .github/workflows/**
+      - .github/actions/**
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/**
+      - .github/actions/**
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions: {} # deny-by-default; job below grants only what it needs
+
+jobs:
+  zizmor:
+    name: Scan GitHub Actions workflows
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    # actions: read — zizmor's online audits call the GitHub Actions API to
+    # resolve metadata for reusable workflows referenced by this repo
+    # (pull-request.yml calls ROKT/rokt-workflows/.../oss_pr_opened_notification.yml).
+    permissions:
+      contents: read # required by actions/checkout to pull the workflow tree
+      actions: read # see block comment above
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+          fetch-depth: 1 # zizmor only needs the tree at HEAD
+      # Advisory mode — zizmor is rolled out across Rokt repos as a reporter,
+      # not a blocking gate. Findings surface as PR annotations so owners can
+      # triage incrementally without blocking unrelated changes.
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@71321a20a9ded102f6e9ce5718a2fcec2c4f70d8 # v0.5.2
+        continue-on-error: true
+        with:
+          # advanced-security: false — no SARIF upload (GHAS not enabled on
+          # this repo). Switch to true and add `security-events: write` to
+          # job permissions if GHAS is ever enabled.
+          advanced-security: false
+          annotations: true # inline PR annotations (GitHub caps at 10/run)
