@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'DcuiSchema'
-  s.version          = '2.3.0'
+  s.version          = '2.7.0'
   s.summary          = 'DCUI layout schema types for the Rokt SDK ecosystem.'
   s.swift_version    = '5.7'
 
