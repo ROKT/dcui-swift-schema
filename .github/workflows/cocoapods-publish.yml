@@ -25,9 +25,28 @@ jobs:
           persist-credentials: false
 
       - name: Validate podspec
+        id: pod-lint
+        # CocoaPods trunk is going read-only; the push below reports its own failure.
+        continue-on-error: true
         run: pod lib lint DcuiSchema.podspec --allow-warnings --verbose
 
+      - name: Warn when pod lint failed
+        if: steps.pod-lint.outcome == 'failure'
+        run: echo "::warning::pod lib lint failed for DcuiSchema. The tag and SPM are not affected."
+
       - name: Publish to CocoaPods
+        id: trunk-push
+        # CocoaPods trunk is going read-only; the tag and SPM are already done.
+        continue-on-error: true
         run: pod trunk push DcuiSchema.podspec --allow-warnings
         env:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+
+      - name: Warn when the trunk push failed
+        if: steps.trunk-push.outcome == 'failure'
+        run: |
+          echo "::warning::The CocoaPods trunk push failed. The tag and SPM are not affected. Check the log above for the cause, and re-run this job once it is fixed or trunk accepts pushes again."
+          {
+            echo "### CocoaPods trunk push failed"
+            echo "The tag and SPM are not affected. Check the job log for the cause."
+          } >> "$GITHUB_STEP_SUMMARY"
