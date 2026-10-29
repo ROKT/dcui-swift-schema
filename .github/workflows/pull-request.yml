@@ -27,12 +27,29 @@ jobs:
       - name: Lint podspec
         run: pod lib lint DcuiSchema.podspec --allow-warnings --verbose
 
+  spm-build:
+    name: Build and test (Swift Package Manager)
+    runs-on: macos-15
+    permissions:
+      contents: read # required by actions/checkout to pull the repo
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Build for iOS
+        run: xcodebuild build -scheme DcuiSchema -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO -quiet
+
+      - name: Test
+        run: swift test
+
   pr-notify:
     if: >
       github.event_name == 'pull_request' &&
       github.event.pull_request.draft == false
     name: Notify GChat
-    needs: [podspec-lint]
+    needs: [podspec-lint, spm-build]
     permissions:
       contents: read # reusable workflow below checks out its own repo
       pull-requests: read # reusable workflow reads PR metadata (title, author, URL) for the notification payload
