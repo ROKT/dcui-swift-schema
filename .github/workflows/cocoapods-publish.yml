@@ -16,6 +16,7 @@ jobs:
   publish-cocoapods:
     name: Publish to CocoaPods
     runs-on: macos-15
+    environment: release
     permissions:
       contents: read # required by actions/checkout to pull the repo for linting + pushing the podspec
     steps:
