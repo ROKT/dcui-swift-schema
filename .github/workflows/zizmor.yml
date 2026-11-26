@@ -42,7 +42,7 @@ jobs:
       # not a blocking gate. Findings surface as PR annotations so owners can
       # triage incrementally without blocking unrelated changes.
       - name: Run zizmor
-        uses: zizmorcore/zizmor-action@85b2b9fb8e3325e7a23d7d0a9d7ba5ae0f999e3e # v0.7.1
+        uses: zizmorcore/zizmor-action@1b4550e929643b8b26a62303c6bd64814271a4f1 # v0.9.2
         continue-on-error: true
         with:
           # advanced-security: false — no SARIF upload (GHAS not enabled on
